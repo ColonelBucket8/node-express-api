@@ -1,4 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
+
+const sizeEnum = ["XS, S, M, L, XL, XLL"];
 let carts = [
   {
     id: uuidv4(),
@@ -31,6 +33,17 @@ export const getCart = (req, res) => {
 export const createCart = (req, res) => {
   const newCart = req.body;
 
+  if (newCart.size?.length > 4) {
+    return res.send("The size characters must be below than 4!");
+  }
+
+  if (newCart.quantity > 10) {
+    return res.send("You are buying too much");
+  }
+
+  if (newCart.quantity < 0) {
+    return res.send("The quantity cannot be negative");
+  }
   const newCartWithId = { ...newCart, id: uuidv4() };
 
   carts.push(newCartWithId);
@@ -53,6 +66,18 @@ export const updateCart = (req, res) => {
   const { type, name, quantity, size } = req.body;
 
   const cartToBeUpdated = carts.find((cart) => cart.id === id);
+
+  if (size?.length > 4) {
+    return res.send("The size characters must be below than 4!");
+  }
+
+  if (quantity > 10) {
+    return res.send("You are buying too much");
+  }
+
+  if (quantity < 0) {
+    return res.send("The quantity cannot be negative");
+  }
 
   if (type) cartToBeUpdated.type = type;
   if (name) cartToBeUpdated.name = name;
